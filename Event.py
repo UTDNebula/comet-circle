@@ -1,5 +1,5 @@
 from anytree import Node
-from data import _schools
+from data import schools
 
 class Event:
     def __init__(self, startTime, finishTime, tags):
