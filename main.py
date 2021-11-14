@@ -1,15 +1,9 @@
 import streamlit as st
 import data
-from anytree import Node, RenderTree
 from Event import Event
+from anytree import RenderTree
 
-utd = Node("UTD")
-bbs = Node("bbs", parent=utd)
-acn = Node("acn", parent=bbs)
-
-
-
+data.assignTags()
 st.write("TEst")
-st.write(data.search(''))
-st.write(Event(0, 15, ['bis']))
+st.write(RenderTree(data.rootTag))
 
