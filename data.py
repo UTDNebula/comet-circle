@@ -5,7 +5,7 @@ NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
 
 headers = {"Authorization": NEBULA_API_KEY}
 
-response = requests.get("https://api.utdnebula.com/v1/sections/search?=Sunday", headers=headers)
+response = requests.get("https://api.utdnebula.com/v1/sections/search?=", headers=headers)
 classes = json.loads(response.text)
 
 conflictDays = {'Monday' : 0,
@@ -15,6 +15,8 @@ conflictDays = {'Monday' : 0,
                 'Friday' : 0,
                 'Saturday' : 0,
                 'Sunday' : 0}
+
+
 for event in classes:
     if "Monday" in event['days']:
         conflictDays['Monday'] += 1
@@ -30,3 +32,10 @@ for event in classes:
         conflictDays['Saturday'] += 1
     if "Sunday" in event['days']:
         conflictDays['Sunday'] += 1
+
+def search(property, value):
+    events = []
+    for event in classes:
+        if event[property] == value:
+            events.append(event)
+    return events

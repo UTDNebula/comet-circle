@@ -9,4 +9,4 @@ acn = Node("acn", parent=bbs)
 
 
 st.write("TEst")
-st.write(data.conflictDays)
+st.write(data.search('course_prefix', 'bis'))
