@@ -22,6 +22,7 @@ class Data:
         self.prefixesNodes = []
         self.rootTag = Node("utd")
         self.assignMetaData()
+        self.debugTimes = []
 
     def assignMetaData(self):
 
@@ -67,7 +68,7 @@ class Data:
             tag = event['course_prefix']
             term = event['term']
             _days = self._getDays(event['days'])
-            if (len(_days) > 0 and len(termFilters) == 0 or term in termFilters) and (len(tagFilters) == 0 or tag in tagFilters):
+            if (len(termFilters) == 0 or term in termFilters) and (len(tagFilters) == 0 or tag in tagFilters):
                 filteredEvents.append(event)
         return filteredEvents
 
