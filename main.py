@@ -106,7 +106,9 @@ fig.update_layout(
     title='Classes',
     xaxis_nticks=100)
 
-'''# Comet Circle'''
+#c1,c2=st.columns(2)
+#c2.image("https://media.discordapp.net/attachments/909158227600613497/909500457800593438/unknown.png", width=100)
+st.title("CometCircle")
 c1, c2 = st, st
 if show_events and show_classes:
     c1, c2 = st,st
