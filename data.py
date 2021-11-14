@@ -54,8 +54,6 @@ class Data:
                 _tags.append(tag)
 
                 
-    events = []
-
     def filterEvents(self, _events, termFilters, tagFilters):
         filteredEvents = []
         for event in _events:

@@ -33,6 +33,45 @@ event(st.sidebar)
 if st.sidebar.button("Create Event"):
     'Wow'
 
+import plotly.graph_objects as go
+import datetime
+import numpy as np
+np.random.seed(1)
+
+week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+times = []
+
+for i in range(24, 5,-1):
+    hour = ((i-1) % 12) + 1
+    #hour2 = ((i-1) % 12) + 1
+    pm = i >= 12 and i < 24 and " PM" or " AM"
+    times.append(str(hour) + pm)
+    #times.append(str(hour2) +":30 " + pm)
+    #times.append(str(hour) +":30 " + pm)
+   # times.append(str(hour) +":45 "+ pm)
+
+
+base = times
+#dates = base - np.arange(180) * datetime.timedelta(days=1)
+#z = np.random.poisson(size=(len(week), len(base)))
+
+
+
+z=[[100,200],[0,1]] #class density data goes here
+
+fig = go.Figure(data=go.Heatmap(
+        z=z,
+        x=week,
+        y=base,
+        colorscale='Viridis'))
+#fig.update_xaxes(side="top")
+fig.update_layout(
+    title='Comet Clique',
+    xaxis_nticks=100)
+
+fig.show()
+
 # Plotly test
 import plotly.express as px
 data=[[1, 25, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, 5, 20]]
