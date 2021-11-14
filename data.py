@@ -55,8 +55,6 @@ class Data:
         for event in _events:
             _tags = self._getTagsFromPrefix(event['course_prefix'])
             _days = self._getDays(event['days'])
-            if len(_days) <= 0:
-                print(str(len(_days)) + " : " + str(_days))
             _times = (None, None) if len(_days) > 0 else self._convertToStringTimeToInts(event['times'])
             for day in _days:
                 _eventsDict[day].append(Event(_times[0], _times[1], _tags))
@@ -112,7 +110,7 @@ class Data:
     def _convertToStringTimeToInts(self, timesStr):
         _start = None
         _finish = None
-        print(timesStr)
+        #print(timesStr)
         if ":" not in timesStr:
             return _start, _finish
         times = timesStr.split(' - ')
