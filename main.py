@@ -4,15 +4,17 @@ from DateSelector import event
 import data
 import SessionState
 
-# Majors
+dat = data.Data()
+dat.assignMetaData()
 
 # Sidebar
-data.assignMetaData()
 side = st.sidebar
-data.tagFilters = st.sidebar.multiselect('Filters', data.tags)
-data.termFilters = st.sidebar.multiselect('Term', data.terms)
+tagFilters = st.sidebar.multiselect('Filters', dat.tags)
+termFilters = st.sidebar.multiselect('Term', dat.terms)
 
-st.write(data.filterEvents(data.classes, data.termFilters, data.tagFilters))
+st.write(tagFilters)
+st.write(termFilters)
+st.write(dat.filterEvents(dat.classes, termFilters, tagFilters))
 
 # View Settings
 c1,c2 = st.sidebar.columns(2)
