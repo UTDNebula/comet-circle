@@ -1,8 +1,10 @@
+
 class Event:
-    def __init__(self, startTime, finishTime, tags):
+    def __init__(self, startTime, finishTime, tags, desc = ''):
         self.startTime = startTime
         self.finishTime = finishTime
         _tags = []
+        self.description = desc
 
         for tag in tags:
 
@@ -24,25 +26,5 @@ def getDayTimeConflicts(events, minHour, maxHour):
             if startIndex >= 0 and finishIndex < len(conflicts):
                 for i in range(startIndex, finishIndex):
                     conflicts[i] += 1
-
+    conflicts.reverse()
     return conflicts
-
-def getEventListByDay(self, _events):
-
-        _eventsDict = {
-            "Sunday": [],
-            "Monday": [],
-            "Tuesday": [],
-            "Wednesday": [],
-            "Thursday": [],
-            "Friday": [],
-            "Saturday": []
-        }
-
-        for event in _events:
-            _tags = self._getTagsFromPrefix(event.tags)
-            _times = (None, None) if len(_days) <= 0 else self._convertToStringTimeToInts(event['times'])
-            for day in _days:
-                _eventsDict[day].append(Event(_times[0], _times[1], _tags))
-
-        return _eventsDict
