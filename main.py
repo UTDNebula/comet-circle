@@ -9,4 +9,4 @@ acn = Node("acn", parent=bbs)
 
 
 st.write("TEst")
-st.write(data.text)
+st.write(data.conflictDays)
