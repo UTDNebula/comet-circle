@@ -1,6 +1,6 @@
 import requests
 import json
-from anytree import Node
+from anytree import Node, findall
 
 NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
 
@@ -17,28 +17,44 @@ conflictDays = {'Monday' : 0,
                 'Saturday' : 0,
                 'Sunday' : 0}
 
-schoolFilters = []
-prefixFilters = []
+tagFilters = []
 termFilters = []
+
 events = []
-_schools = []
-_schoolsNodes = []
-_prefixes = []
-_prefixesNodes = []
+schools = []
+schoolsNodes = []
+tags = []
+prefixes = []
+prefixesNodes = []
 rootTag = Node("utd")
 
 def assignTags():
     for event in classes:
-        if event['school'] not in _schools:
-            _schools.append(event['school'])
-            _schoolsNodes.append(Node(event['school'], parent=rootTag))
-        if event['course_prefix'] not in _prefixes:
-            _prefixes.append(event['course_prefix'])
-            schoolIndex = _schools.index(event['school'])
-            _prefixesNodes.append(Node(event['course_prefix'], parent=_schoolsNodes[schoolIndex]))
+        if event['school'] not in schools:
+            schools.append(event['school'])
+            schoolsNodes.append(Node(event['school'], parent=rootTag))
+        if event['course_prefix'] not in prefixes:
+            prefixes.append(event['course_prefix'])
+            schoolIndex = schools.index(event['school'])
+            prefixesNodes.append(Node(event['course_prefix'], parent=schoolsNodes[schoolIndex]))
+
+    return list(set(schools + prefixes))
 
 def filterEvents(_events):
-    return
+    for event in _events:
+        _tags = []
+        tag = event['course_prefix']
+        if tag in schools:
+            schoolIndex = schools.index(tag)
+            _prefixNodes = findall(schoolsNodes[schoolIndex])
+            for node in _prefixNodes:
+                _tags.append(node)
+        else:
+            _tags.append(tag)
+
+
+
+
 
 
 

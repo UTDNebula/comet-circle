@@ -5,5 +5,17 @@ from anytree import RenderTree
 
 data.assignTags()
 st.write("TEst")
-st.write(RenderTree(data.rootTag))
+tags = list(set(data.schools + data.prefixes))
+# sidebar
+data.tagFilters = st.sidebar.multiselect(
+    'School',
+    tags
+)
+add_checkbox = st.sidebar.checkbox(
+    'Show classes'
+)
+
+add_checkbox = st.sidebar.checkbox(
+    'Show events'
+)
 
