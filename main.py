@@ -8,7 +8,7 @@ import datetime as dt
 import plotly.graph_objects as go
 import numpy as np
 
-st.set_page_config(page_title='CometCircle')
+st.set_page_config(page_title='CometCircle', page_icon='💫')
 
 dat = data.Data()
 dat.assignMetaData()
