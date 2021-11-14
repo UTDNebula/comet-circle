@@ -16,23 +16,6 @@ class Event:
     def __str__(self):
         return str(self.startTime) + " - " + str(self.finishTime) + " | " + str(self.tags)
 
-    def convertToStringTimeToInts(self, timesStr):
-        times = timesStr.split(' - ')
-        if len(times) != 2:
-            Exception("time not formatted correctly" + timesStr)
-        if times[0] == 'tbh' or times[1] == 'tbh':
-            self.startTime = -1
-            self.finishTime = -1
-            return self.startTime, self.finishTime
-
-        start = times[0].split(":")
-        finish = times[1].split(":")
-        if len(start) + len(finish) != 4:
-            Exception("time not formatted correctly" + timesStr)
-
-        self.startTime = int(start[0] + start[1])
-        self.finishTime = int(finish[0] + finish[1])
-        return self.startTime, self.finishTime
 
 def getDayTimeConflicts(events, minHour, maxHour):
     conflicts = [0] * ((maxHour - minHour) * 4 + 1)
@@ -45,3 +28,23 @@ def getDayTimeConflicts(events, minHour, maxHour):
                     conflicts[i] += 1
 
     return conflicts
+
+def getEventListByDay(self, _events):
+
+        _eventsDict = {
+            "Sunday": [],
+            "Monday": [],
+            "Tuesday": [],
+            "Wednesday": [],
+            "Thursday": [],
+            "Friday": [],
+            "Saturday": []
+        }
+
+        for event in _events:
+            _tags = self._getTagsFromPrefix(event.tags)
+            _times = (None, None) if len(_days) <= 0 else self._convertToStringTimeToInts(event['times'])
+            for day in _days:
+                _eventsDict[day].append(Event(_times[0], _times[1], _tags))
+
+        return _eventsDict

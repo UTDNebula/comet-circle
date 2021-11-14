@@ -3,17 +3,19 @@ import json
 from anytree import Node, findall
 from Event import Event
 from datetime import time
+import streamlit as st
 
+@st.cache(suppress_st_warning=True)
+def get_classes():
+    NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
+    headers = {"Authorization": NEBULA_API_KEY}
+    response = requests.get("https://api.utdnebula.com/v1/sections/search?=", headers=headers)
+    return json.loads(response.text)
 
 class Data:
 
     def __init__(self):
-        NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
-
-        headers = {"Authorization": NEBULA_API_KEY}
-
-        response = requests.get("https://api.utdnebula.com/v1/sections/search?=", headers=headers)
-        self.classes = json.loads(response.text)
+        self.classes = get_classes()
         self.terms = []
         self.tags = []
         self.schools = []
@@ -128,7 +130,7 @@ class Data:
         _start = time(int(start[0]), int(start[1]))
         _finish = time(int(finish[0]), int(finish[1]))
 
-        print (timesStr + " -> " + str(_start) + " - " + str(_finish))
+        #print (timesStr + " -> " + str(_start) + " - " + str(_finish))
         return _start, _finish
 
     def _getDays(self, daysString):

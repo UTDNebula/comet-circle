@@ -2,8 +2,7 @@ import streamlit as st
 from streamlit.state.session_state import Value
 from DateSelector import event
 import data
-from Event import getDayTimeConflicts
-import SessionState
+from Event import Event, getDayTimeConflicts
 import datetime as dt
 
 dat = data.Data()
@@ -20,23 +19,36 @@ c1,c2 = st.sidebar.columns(2)
 show_classes = c1.checkbox('Show classes', value=True)
 show_events = c2.checkbox('Show events', value=True)
 
+if 'eventsByDay' not in st.session_state:
+	st.session_state.eventsByDay = {
+        "Sunday": [],
+        "Monday": [],
+        "Tuesday": [],
+        "Wednesday": [],
+        "Thursday": [],
+        "Friday": [],
+        "Saturday": []}
 
 # Create Event
 st.sidebar.write('''---''')
 tab = st.sidebar
 today = dt.datetime.today()
-start_date = tab.date_input('Start date', today)
 c1,c2 = tab.columns(2)
-t1 = c1.text_input('Start time')
-t2 = c1.text_input('End time')
+time_date = c1.date_input('Start date', today)
+time_tags = c2.multiselect('Tags', dat.tags)
+start = c1.text_input('Start time')
+finish = c2.text_input('End time')
 if st.sidebar.button("Create Event"):
     tab.success('Event created!')
+    newEvent = Event(start, finish, time_tags)
+    #st.session_state.eventsByDay[time_date.weekday()]
 
 
 #Actions
 filteredClasses = dat.filterEvents(dat.classes, termFilters, tagFilters)
     
-classesByDay = dat.getEventListByDay(filteredClasses) if show_classes else dat.getEventListByDay([])
+classesByDay = dat.getEventListByDay(filteredClasses)
+
 
 import plotly.graph_objects as go
 import datetime
@@ -71,17 +83,28 @@ for day in classesByDay:
 z = np.transpose(z)
 #st.write(z)
 
+colorscale=[[0.0, 'rgb(255,255,255)'], [0.1, 'rgb(0,255,0)'], [0.55, 'rgb(255,255,0)'], [1.0, 'rgb(255, 0, 0)']]
+
 fig = go.Figure(data=go.Heatmap(
         z=z,
         x=week,
         y=base,
-        colorscale='Viridis'))
+        colorscale=colorscale))
 #fig.update_xaxes(side="top")
 fig.update_layout(
-    title='Comet Clique',
+    title='Classes',
     xaxis_nticks=100)
 
-st.plotly_chart(fig)
+'''# Comet Circle'''
+c1, c2 = st, st
+if show_events and show_classes:
+    c1, c2 = st.columns(2)
+
+if show_classes:
+    c1.plotly_chart(fig)
+if show_events:
+    #c2.plotly_chart(fig)
+    "lol"
 
 # Plotly test
 import plotly.express as px
