@@ -37,5 +37,6 @@ def search(property, value):
     events = []
     for event in classes:
         if event[property] == value:
+            _event = evem
             events.append(event)
     return events
