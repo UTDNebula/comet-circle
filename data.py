@@ -38,8 +38,7 @@ def assignTags():
             _prefixesNodes.append(Node(event['course_prefix'], parent=_schoolsNodes[schoolIndex]))
 
 def filterEvents(_events):
-    for event in _events:
-        if()
+    return
 
 
 
