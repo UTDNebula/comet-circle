@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit.state.session_state import Value
 from DateSelector import event
 import data
+from Event import getDayTimeConflicts
 import SessionState
 
 dat = data.Data()
@@ -12,9 +13,10 @@ side = st.sidebar
 tagFilters = st.sidebar.multiselect('Filters', dat.tags)
 termFilters = st.sidebar.multiselect('Term', dat.terms)
 
-st.write(tagFilters)
-st.write(termFilters)
-st.write(dat.filterEvents(dat.classes, termFilters, tagFilters))
+filteredEvents = dat.filterEvents(dat.classes, termFilters, tagFilters)
+#raise Exception(str(dat.search(filteredEvents, 'days', 'tbd')))
+eventsByDay = dat.getEventListByDay(filteredEvents)
+#st.write(dat.filterEvents(dat.classes, termFilters, tagFilters))
 
 # View Settings
 c1,c2 = st.sidebar.columns(2)
@@ -40,25 +42,31 @@ np.random.seed(1)
 
 week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
+st.write("Length of filtered Events: " + str(len(filteredEvents)))
 times = []
+minHour = 6
+maxHour = 24
 
-for i in range(24, 5,-1):
-    hour = ((i-1) % 12) + 1
-    #hour2 = ((i-1) % 12) + 1
-    pm = i >= 12 and i < 24 and " PM" or " AM"
-    times.append(str(hour) + pm)
-    #times.append(str(hour2) +":30 " + pm)
-    #times.append(str(hour) +":30 " + pm)
-   # times.append(str(hour) +":45 "+ pm)
+for hour in range(minHour, maxHour):
+    for i in range(0, 4):
+        min = i * 15
+        min = "0" + str(min) if min < 10 else str(min)
+        timeStr = str(hour-12) + ":" + min + " PM" if hour > 12 else str(hour) + ":" + min + " AM"
+        times.append(timeStr)
 
+timeStr = str(maxHour-12) + ":" + "00" + " PM" if maxHour > 12 else str(maxHour) + ":" + "00" + " AM"
+times.append(timeStr)
+times.reverse()
 
 base = times
 #dates = base - np.arange(180) * datetime.timedelta(days=1)
 #z = np.random.poisson(size=(len(week), len(base)))
 
-
-
-z=[[100,200],[0,1]] #class density data goes here
+st.write(filteredEvents)
+z = []
+for day in eventsByDay:
+    z.append(getDayTimeConflicts(eventsByDay[day], minHour, maxHour))
+z = np.transpose(z)
 
 fig = go.Figure(data=go.Heatmap(
         z=z,
@@ -70,7 +78,7 @@ fig.update_layout(
     title='Comet Clique',
     xaxis_nticks=100)
 
-fig.show()
+st.plotly_chart(fig)
 
 # Plotly test
 import plotly.express as px
