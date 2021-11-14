@@ -21,14 +21,16 @@ tagFilters = []
 termFilters = []
 
 events = []
+#meta data
 schools = []
-schoolsNodes = []
 tags = []
+terms = []
 prefixes = []
+schoolsNodes = []
 prefixesNodes = []
 rootTag = Node("utd")
 
-def assignTags():
+def assignMetaData():
     for event in classes:
         if event['school'] not in schools:
             schools.append(event['school'])
@@ -37,10 +39,30 @@ def assignTags():
             prefixes.append(event['course_prefix'])
             schoolIndex = schools.index(event['school'])
             prefixesNodes.append(Node(event['course_prefix'], parent=schoolsNodes[schoolIndex]))
+        if event['term'] not in terms:
+            terms.append(event['term'])
+    tags = list(set(schools + prefixes))
+    
+    
+assignMetaData()
 
-    return list(set(schools + prefixes))
+def filterEvents(_events, termFilters, tagFilters):
+    filteredEvents = []
+    for event in _events:
+        if event['term'] not in termFilters:
+            continue
+        if event['coursePrefix'] not in tagFilters or event['school'] not in tagFilters:
+            continue
+        
+        filteredEvents.append(event)
 
-def filterEvents(_events):
+
+    return filterEvents
+        
+
+
+def getEventList(_events):
+    
     for event in _events:
         _tags = []
         tag = event['course_prefix']
@@ -51,8 +73,7 @@ def filterEvents(_events):
                 _tags.append(node)
         else:
             _tags.append(tag)
-
-
+        
 
 
 
