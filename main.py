@@ -104,7 +104,7 @@ if show_classes:
     c1.plotly_chart(fig)
 if show_events:
     #c2.plotly_chart(fig)
-    "lol"
+    
 
 # Plotly test
 import plotly.express as px

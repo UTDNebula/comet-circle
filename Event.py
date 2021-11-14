@@ -1,5 +1,3 @@
-from anytree import Node
-
 class Event:
     def __init__(self, startTime, finishTime, tags):
         self.startTime = startTime
