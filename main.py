@@ -4,6 +4,7 @@ from DateSelector import event
 import data
 from Event import getDayTimeConflicts
 import SessionState
+import datetime as dt
 
 dat = data.Data()
 dat.assignMetaData()
@@ -13,27 +14,29 @@ side = st.sidebar
 tagFilters = st.sidebar.multiselect('Filters', dat.tags)
 termFilters = st.sidebar.multiselect('Term', dat.terms)
 
-filteredEvents = dat.filterEvents(dat.classes, termFilters, tagFilters)
-#raise Exception(str(dat.search(filteredEvents, 'days', 'tbd')))
-eventsByDay = dat.getEventListByDay(filteredEvents)
-#st.write(dat.filterEvents(dat.classes, termFilters, tagFilters))
 
 # View Settings
 c1,c2 = st.sidebar.columns(2)
 show_classes = c1.checkbox('Show classes', value=True)
 show_events = c2.checkbox('Show events', value=True)
 
-# View Debug
-if show_classes:
-    'show classes'
-if show_events:
-    'show events'
 
 # Create Event
 st.sidebar.write('''---''')
-event(st.sidebar)
+tab = st.sidebar
+today = dt.datetime.today()
+start_date = tab.date_input('Start date', today)
+c1,c2 = tab.columns(2)
+t1 = c1.text_input('Start time')
+t2 = c1.text_input('End time')
 if st.sidebar.button("Create Event"):
-    'Wow'
+    tab.success('Event created!')
+
+
+#Actions
+filteredClasses = dat.filterEvents(dat.classes, termFilters, tagFilters)
+    
+classesByDay = dat.getEventListByDay(filteredClasses) if show_classes else dat.getEventListByDay([])
 
 import plotly.graph_objects as go
 import datetime
@@ -42,7 +45,7 @@ np.random.seed(1)
 
 week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-st.write("Length of filtered Events: " + str(len(filteredEvents)))
+#st.write("Length of filtered Events: " + str(len(filteredEvents)))
 times = []
 minHour = 6
 maxHour = 24
@@ -62,11 +65,11 @@ base = times
 #dates = base - np.arange(180) * datetime.timedelta(days=1)
 #z = np.random.poisson(size=(len(week), len(base)))
 
-st.write(filteredEvents)
 z = []
-for day in eventsByDay:
-    z.append(getDayTimeConflicts(eventsByDay[day], minHour, maxHour))
+for day in classesByDay:
+    z.append(getDayTimeConflicts(classesByDay[day], minHour, maxHour))
 z = np.transpose(z)
+#st.write(z)
 
 fig = go.Figure(data=go.Heatmap(
         z=z,
