@@ -1,4 +1,3 @@
-from hashlib import new
 import streamlit as st
 from streamlit.state.session_state import Value
 import data
@@ -21,7 +20,7 @@ termFilters = st.sidebar.multiselect('Term', dat.terms)
 # View Settings
 c1,c2 = st.sidebar.columns(2)
 show_classes = c1.checkbox('Show classes', value=True)
-show_events = c2.checkbox('Show events', value=True)
+show_events = c2.checkbox('Show events', value=False) # disabled originally because functionality isn't really useful currently
 
 if 'events' not in st.session_state:
 	st.session_state.events = {
@@ -34,25 +33,35 @@ if 'events' not in st.session_state:
             "Saturday": []
         }
 
-# Create Event
-st.sidebar.write('''---''')
-tab = st.sidebar
-today = dt.datetime.today()
-event_name = tab.text_input('Event Name', value='Event name')
-c1,c2 = tab.columns(2)
-time_date = c1.date_input('Start date', today)
-time_tags = c2.multiselect('Tags', dat.tags)
-c1,c2 = tab.columns(2)
-start = c1.text_input('Start time')
-finish = c2.text_input('End time')
-if st.sidebar.button("Create Event"):
-    tab.success('Event created!')
-    start = dt.datetime.strptime(start, '%H:%M')
-    finish = dt.datetime.strptime(finish, '%H:%M')
-    newEvent = Event(start, finish, time_tags, event_name)
-    st.session_state.events[['Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][time_date.weekday()]].append(newEvent)
-st.sidebar.write('''---''')
-st.sidebar.button("Import from Presence")
+# Create Event Form
+if show_events:
+    st.sidebar.write('''---''')
+    tab = st.sidebar
+    today = dt.datetime.today()
+
+    # Event Form
+    form = st.sidebar.form(key="event_form", clear_on_submit= True, )
+    form.title("Create Event")
+    event_name = form.text_input('Event Name', value='Event name')
+    c1,c2 = form.columns(2)
+    time_date = c1.date_input('Start date', today)
+    time_tags = c2.multiselect('Tags', dat.tags)
+    c1,c2 = form.columns(2)
+    start = c1.text_input('Start time')
+    finish = c2.text_input('End time')
+    submit = form.form_submit_button("Submit")
+
+    if submit:
+        tab.success('Event created!')
+        start = dt.datetime.strptime(start, '%H:%M')
+        finish = dt.datetime.strptime(finish, '%H:%M')
+        newEvent = Event(start, finish, time_tags, event_name)
+        st.session_state.events[['Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][time_date.weekday()]].append(newEvent)
+
+
+# Import from presence button (does nothing)
+# st.sidebar.write('''---''')
+# st.sidebar.button("Import from Presence")
 
 
 #Actions
@@ -129,7 +138,9 @@ def eventConflicts(events, minHour, maxHour):
 import plotly.figure_factory as ff
 if show_classes:
     c1.plotly_chart(fig)
+
 if show_events: 
+
     #c2.plotly_chart(fig)
     z2 = []
     z3 = []
