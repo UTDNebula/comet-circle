@@ -11,7 +11,7 @@ import streamlit as st
 def get_classes():
     NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
     headers = {"Authorization": NEBULA_API_KEY}
-    response = requests.get("https://api.utdnebula.com/v1/sections/search?=", headers=headers)
+    response = requests.get("https://api-ilknlukhca-uc.a.run.app/v1/sections/search?=", headers=headers)
     st.write(response)
     return json.loads(response.text)
 
