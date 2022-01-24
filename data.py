@@ -12,7 +12,8 @@ def get_classes():
     NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
     headers = {"Authorization": NEBULA_API_KEY}
     response = requests.get("https://api-ilknlukhca-uc.a.run.app/v1/sections/search?=", headers=headers)
-    st.write(response)
+    if response.status_code != 200:
+        st.error("Error retrieving data from api")
     return json.loads(response.text)
 
 class Data:
