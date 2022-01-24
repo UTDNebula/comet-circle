@@ -1,7 +1,6 @@
 from hashlib import new
 import streamlit as st
 from streamlit.state.session_state import Value
-from DateSelector import event
 import data
 from Event import Event, getDayTimeConflicts
 import datetime as dt

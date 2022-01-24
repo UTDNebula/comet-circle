@@ -1,16 +1,18 @@
 import requests
 import json
-from anytree import Node, findall
+from anytree import Node, findall, RenderTree
 from Event import Event
 from datetime import time
 import streamlit as st
 
+
+# API reference https://about.utdnebula.com/docs/api-docs/nebula-api
 @st.cache(suppress_st_warning=True)
 def get_classes():
     NEBULA_API_KEY = "dd1h55UQUb8x5nQIPW2iJ1ABaIDx9iv7"
     headers = {"Authorization": NEBULA_API_KEY}
-    response = requests.get("https://api.utdnebula.com/v1/sections/search?=", headers=headers)
-
+    response = requests.get("https://api-ilknlukhca-uc.a.run.app/v1/sections/search?=", headers=headers)
+    st.write(response)
     return json.loads(response.text)
 
 class Data:
@@ -25,24 +27,64 @@ class Data:
         self.prefixesNodes = []
         self.rootTag = Node("utd")
         self.assignMetaData()
-        self.debugTimes = []
 
     def assignMetaData(self):
 
-        for event in self.classes:
-            if event['school'] not in self.schools:
-                self.schools.append(event['school'])
-                self.schoolsNodes.append(Node(event['school'], parent=self.rootTag))
-            if event['course_prefix'] not in self.prefixes:
-                self.prefixes.append(event['course_prefix'])
-                schoolIndex = self.schools.index(event['school'])
-                self.prefixesNodes.append(Node(event['course_prefix'], parent=self.schoolsNodes[schoolIndex]))
-            if event['term'] not in self.terms:
-                self.terms.append(event['term'])
+        for _class in self.classes:
+            # School abbreviation to name:
+            # "ah" => School of Arts and Humanities
+            # "atec" => School of Arts, Technology, and Emerging Communication
+            # "bbs" => School of Behavioral and Brain Sciences
+            # "eps" => School of Economic, Political and Policy Sciences
+            # "ecs" => Erik Jonsson School of Engineering and Computer Science
+            # "is" => School of Interdisciplinary Studies
+            # "mgt" => Naveen Jindal School of Management
+            # "nsm" => School of Natural Sciences and Mathematics
+            # "hons" => honors
+            # "ug" => Undergraduate (undeclared)?
+            # 
 
+            classSchool = _class['school']
+            classPrefix = _class['course_prefix']
+            classTerm = _class['term']
+
+            if classSchool not in self.schools:
+                self.schools.append(classSchool)
+                self.schoolsNodes.append(Node(classSchool, parent=self.rootTag))
+            if classPrefix not in self.prefixes:
+                self.prefixes.append(classPrefix)
+                schoolIndex = self.schools.index(classSchool)
+                self.prefixesNodes.append(Node(classPrefix, parent=self.schoolsNodes[schoolIndex]))
+            if classTerm not in self.terms:
+                self.terms.append(classTerm)
+
+        print(RenderTree(self.rootTag))
+        
+        
         self.tags = list(set(self.schools + self.prefixes))
         self.tags.sort()
         self.terms.sort()
+
+    def getNodeListNames(nodeList):
+        nodeListNames = []
+        for node in nodeList:
+            nodeListNames.append(node.name)
+        return nodeListNames
+
+
+    def getSchoolPrefixTags(self, schoolTag):
+        st.write(self.rootTag.children)
+        prefixTagList = []
+        for prefix in self.rootTag.children[schoolTag].children:
+            prefixTagList.append(prefix.name)
+        return prefixTagList
+
+    def getSchoolTags(self):
+        schoolsTagList = []
+        for node in self.rootTag.children:
+            schoolsTagList.append(node.name)
+        return schoolsTagList
+
 
     def getEventListByDay(self, _events):
 
@@ -114,7 +156,7 @@ class Data:
     def _convertToStringTimeToInts(self, timesStr):
         _start = None
         _finish = None
-        print(timesStr)
+        # print(timesStr)
         if ":" not in timesStr:
             return _start, _finish
         times = timesStr.split(' - ')
