@@ -59,7 +59,7 @@ class Data:
             if classTerm not in self.terms:
                 self.terms.append(classTerm)
 
-        print(RenderTree(self.rootTag))
+        #print(RenderTree(self.rootTag))
         
         
         self.tags = list(set(self.schools + self.prefixes))
@@ -74,7 +74,7 @@ class Data:
 
 
     def getSchoolPrefixTags(self, schoolTag):
-        st.write(self.rootTag.children)
+        #st.write(self.rootTag.children)
         prefixTagList = []
         for prefix in self.rootTag.children[schoolTag].children:
             prefixTagList.append(prefix.name)
@@ -87,54 +87,21 @@ class Data:
         return schoolsTagList
 
 
-    def getEventListByDay(self, _events):
-
-        _eventsDict = {
-            "Sunday": [],
-            "Monday": [],
-            "Tuesday": [],
-            "Wednesday": [],
-            "Thursday": [],
-            "Friday": [],
-            "Saturday": []
-        }
-
-        for event in _events:
-            _tags = self._getTagsFromPrefix(event['course_prefix'])
-            _days = self._getDays(event['days'])
-            _times = (None, None) if len(_days) <= 0 else self._convertToStringTimeToInts(event['times'])
-            for day in _days:
-                _eventsDict[day].append(Event(_times[0], _times[1], _tags))
-
-        return _eventsDict
 
     def filterEvents(self, _events, termFilters, tagFilters):
         filteredEvents = []
+        # expand all school tags to all their class prefixes
+        tagFiltersExpanded = []
+        for tag in tagFilters:
+            tagFiltersExpanded += self._getTagsFromPrefix(tag)
+        tagFilters = set(tagFiltersExpanded) # Remove duplicates
+
         for event in _events:
             tag = event['course_prefix']
             term = event['term']
-            _days = self._getDays(event['days'])
             if (len(termFilters) == 0 or term in termFilters) and (len(tagFilters) == 0 or tag in tagFilters):
                 filteredEvents.append(event)
         return filteredEvents
-
-    def conflicts(self, _events):
-        conflictDays = {}
-        for event in _events:
-            if "Monday" in event['days']:
-                conflictDays['Monday'] += 1
-            if "Tuesday" in event['days']:
-                conflictDays['Tuesday'] += 1
-            if "Wednesday" in event['days']:
-                conflictDays['Wednesday'] += 1
-            if "Thursday" in event['days']:
-                conflictDays['Thursday'] += 1
-            if "Friday" in event['days']:
-                conflictDays['Friday'] += 1
-            if "Saturday" in event['days']:
-                conflictDays['Saturday'] += 1
-            if "Sunday" in event['days']:
-                conflictDays['Sunday'] += 1
 
     def search(self, _events, property, value):
         newEvents = []
@@ -143,54 +110,13 @@ class Data:
                 newEvents.append(event)
         return newEvents
 
-    def _getTagsFromPrefix(self, tag):
+    def _getTagsFromPrefix(self, prefix):
         _tags = []
-        if tag in self.schools:
-            schoolIndex = self.schools.index(tag)
-            _prefixNodes = findall(self.schoolsNodes[schoolIndex])
+        if prefix in self.schools:
+            schoolIndex = self.schools.index(prefix)
+            _prefixNodes = self.schoolsNodes[schoolIndex].children
             for node in _prefixNodes:
-                _tags.append(node)
+                _tags.append(node.name)
         else:
-            _tags.append(tag)
+            _tags.append(prefix)
         return _tags
-
-    def _convertToStringTimeToInts(self, timesStr):
-        _start = None
-        _finish = None
-        # print(timesStr)
-        if ":" not in timesStr:
-            return _start, _finish
-        times = timesStr.split(' - ')
-        if len(times) != 2:
-            print(Exception("time not formatted correctly " + timesStr))
-            return _start, _finish
-
-        start = times[0].split(":")
-        finish = times[1].split(":")
-        if len(start) != 2 and len(finish) != 2:
-            print(Exception("time not formatted correctly " + timesStr))
-            return _start, _finish
-
-        _start = time(int(start[0]), int(start[1]))
-        _finish = time(int(finish[0]), int(finish[1]))
-
-        #print (timesStr + " -> " + str(_start) + " - " + str(_finish))
-        return _start, _finish
-
-    def _getDays(self, daysString):
-        _days = []
-        if "Sunday" in daysString:
-            _days.append('Sunday')
-        if "Monday" in daysString:
-            _days.append("Monday")
-        if "Tuesday" in daysString:
-            _days.append('Tuesday')
-        if "Wednesday" in daysString:
-            _days.append('Wednesday')
-        if "Thursday" in daysString:
-            _days.append('Thursday')
-        if "Friday" in daysString:
-            _days.append('Friday')
-        if "Saturday" in daysString:
-            _days.append('Saturday')
-        return _days
