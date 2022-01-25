@@ -2,8 +2,10 @@
 
 This project was originally made for [HackUTD-2021F](https://devpost.com/software/comet-clique), but because the project was so *amazing*, Project nebula decided to pick it and maintiain it!
 
-Access on:
+Access on (outdated):
 https://share.streamlit.io/trystonminsquero/hackutd-2021f/main/main.py
+
+To get current build, build the project locally
 
 ## Instalation process
 
@@ -14,5 +16,3 @@ https://share.streamlit.io/trystonminsquero/hackutd-2021f/main/main.py
 6. run the command: streamlit run main.py
 
 it should be running in your browser now, create an issue if you're having trouble!
-
-
