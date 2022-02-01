@@ -25,8 +25,7 @@ def createHeatMapFromCourses(courses, title="Classes", minHour=6, maxHour=24, co
     return fig
 
 def createHeatMapFromEvents(events, title="Events", minHour=6, maxHour=24, colorscale=[[0.0, 'rgb(255,255,255)'], [1.0, 'rgb(0,255,0)']]):
-    
-    
+
     z = []
     for day in events:
         z.append(getDayTimeConflicts(events[day], minHour, maxHour))
